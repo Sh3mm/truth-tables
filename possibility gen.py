@@ -2,11 +2,11 @@ import math
 
 def corrected(num, top):
     raw = []
-    for i in range(int((math.log(top)/math.log(2))) - int(len(num)/2)):
+    for i in range(int(math.log2(top)) - int(len(num)/2)):
         raw += ["0", ";"]
     return(raw + num)
 
-def tobin(num, top):
+def toBin(num, top):
     output = []
     raw = (bin(num))[2:]
 
@@ -15,12 +15,12 @@ def tobin(num, top):
 
     return(corrected(output, top))
 
-file = open("possibility.txt", "w")
+def allPossibilities (nbOfVariables):
+    nbOfPossibilty = 2**int(nbOfVariables)
+    arrayFinal = []
 
-num = input("combien de variables voulez-vous? ")
-print "Loading"
-num = 2**int(num)
-for j in range(num):
-    str1 = ''.join(tobin(j,num))
-    file.write(str1 + "\n")
- 
+    for j in range(nbOfPossibilty):
+        arrayFinal.append(toBin(j,nbOfPossibilty))
+
+    return arrayFinal
+
