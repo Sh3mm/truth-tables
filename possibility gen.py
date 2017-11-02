@@ -28,16 +28,16 @@ def sumOfProducts (answersList, nbOfVariables):
     sumOfProduct = "F = "
     for answers in answersList:
         if answers[nbOfVariables] == 1:
-            product = returnProduct(makeListOf1(answers), nbOfVariables)
+            product = returnProduct(makeListOfX(answers, 1), nbOfVariables)
             sumOfProduct += "(" + str(product) + ")"
 
     return sumOfProduct
 
-def makeListOf1 (answers):
+def makeListOfX (answers, Z):
     listOf1 = []
     placeInList = 0
     for x in answers[:-1]:
-        if x == 1:
+        if x == Z:
             listOf1.append(placeInList)
         placeInList += 1
     return listOf1
@@ -51,9 +51,9 @@ def returnProduct(listof1, nbofVariables):
                 check = True
                 break
         if check == True:
-            product += str(1+i)
+            product += str(chr(65+i))
         else:
-            product += str(1 + i) + "'"
+            product += str(chr(65 + i)) + "'"
         if i != (nbofVariables-1):
             product += "+"
 
@@ -64,3 +64,5 @@ def returnProduct(listof1, nbofVariables):
 def display ():
     #todo make shit display
     JUST_FOR_COMPILING
+
+print (sumOfProducts([[0,0,1],[0,1,1],[1,0,1],[1,1,0]], 2))
