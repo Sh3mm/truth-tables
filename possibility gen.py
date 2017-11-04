@@ -24,23 +24,23 @@ def allPossibilities (nbOfVariables):
 
     return arrayFinal
 
-def sumOfProducts (answersList, nbOfVariables):
-    sumOfProduct = "F = "
-    for answers in answersList:
-        if answers[nbOfVariables] == 1:
-            product = returnProduct(makeListOfX(answers, 1), nbOfVariables)
-            sumOfProduct += "(" + str(product) + ")"
-
-    return sumOfProduct
-
 def makeListOfX (answers, Z):
-    listOf1 = []
+    listOf = []
     placeInList = 0
     for x in answers[:-1]:
         if x == Z:
-            listOf1.append(placeInList)
+            listOf.append(placeInList)
         placeInList += 1
-    return listOf1
+    return listOf
+
+def sumOfProducts (answersList, nbOfVariables):
+    sumOfProduct = "F = "
+    for answers in answersList:
+        if answers[nbOfVariables] == 0:
+            product = returnProduct(makeListOfX(answers, 0), nbOfVariables)
+            sumOfProduct += "(" + str(product) + ")"
+
+    return sumOfProduct
 
 def returnProduct(listof1, nbofVariables):
     product = ""
@@ -59,10 +59,46 @@ def returnProduct(listof1, nbofVariables):
 
     return product
 
+def ProductOfSums (answersList, nbOfVariables):
+    productOfSum = "F = "
+    for answers in answersList:
+        if answers[nbOfVariables] == 1:
+            sum = returnSum(makeListOfX(answers, 1), nbOfVariables)
+            if productOfSum != "F = ":
+                productOfSum += "+"
+            productOfSum += "(" + str(sum) + ")"
 
+
+    return productOfSum
+
+def returnSum(listof1, nbofVariables):
+    Sum = ""
+    for i in range(nbofVariables):
+        check = False
+        for j in listof1:
+            if i == j:
+                check = True
+                break
+        if check == True:
+            Sum += str(chr(65 + i))
+        else:
+            Sum += str(chr(65 + i)) + "'"
+
+    return Sum
 
 def display ():
     #todo make shit display
     JUST_FOR_COMPILING
 
-print (sumOfProducts([[0,0,1],[0,1,1],[1,0,1],[1,1,0]], 2))
+TABLE_DE_VERITE = [
+    [0,0,0,0],
+    [0,0,1,1],
+    [0,1,0,1],
+    [0,1,1,1],
+    [1,0,0,0],
+    [1,0,1,0],
+    [1,1,0,1],
+    [1,1,1,0]]
+
+print ("le produit de somme est: " + ProductOfSums(TABLE_DE_VERITE, 3))
+print ("la somme de produit est: " + sumOfProducts(TABLE_DE_VERITE, 3))
