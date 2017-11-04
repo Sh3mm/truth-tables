@@ -1,12 +1,16 @@
 import math
 
 def corrected(num, top):
+    """adds 0s in front of your binary number to make it a cenrtain lenght
+    accepts a binary number in a list and a lenghts to return a list """
     raw = []
     for i in range(int(math.log2(top)) - int(len(num)/2)):
         raw += ["0", ";"]
     return(raw + num)
 
 def toBin(num, top):
+    """transforms a exadecimal number to its binary conterpart.
+    accepts a number and a lenght to returns a list"""
     output = []
     raw = (bin(num))[2:]
 
@@ -16,6 +20,8 @@ def toBin(num, top):
     return(corrected(output, top))
 
 def allPossibilities (nbOfVariables):
+    """makes a list of all the binary possibilities of a certain number of variables (2^x)
+    accepts a number of variables to return a list"""
     nbOfPossibilty = 2**int(nbOfVariables)
     arrayFinal = []
 
@@ -25,6 +31,8 @@ def allPossibilities (nbOfVariables):
     return arrayFinal
 
 def makeListOfX (answers, Z):
+    """makes a list of the positions of a numbers in a list
+    accept a list and a number to return a list"""
     listOf = []
     placeInList = 0
     for x in answers[:-1]:
@@ -34,6 +42,8 @@ def makeListOfX (answers, Z):
     return listOf
 
 def sumOfProducts (answersList, nbOfVariables):
+    """makes a sum of products of the truth table given to it
+    accepts a truth table and a number of varriables to return a string"""
     sumOfProduct = "F = "
     for answers in answersList:
         if answers[nbOfVariables] == 0:
@@ -43,6 +53,8 @@ def sumOfProducts (answersList, nbOfVariables):
     return sumOfProduct
 
 def returnProduct(listof1, nbofVariables):
+    """makes the product part of the sum of product with the positions of the 0s
+    accepts a list and a number of varriables to return a string"""
     product = ""
     for i in range(nbofVariables):
         check = False
@@ -60,6 +72,8 @@ def returnProduct(listof1, nbofVariables):
     return product
 
 def ProductOfSums (answersList, nbOfVariables):
+    """makes a product of sums of the truth table given to it
+    accepts a truth table and a number of varriables to return a string"""
     productOfSum = "F = "
     for answers in answersList:
         if answers[nbOfVariables] == 1:
@@ -72,6 +86,8 @@ def ProductOfSums (answersList, nbOfVariables):
     return productOfSum
 
 def returnSum(listof1, nbofVariables):
+    """makes the sun part of the product of sums with the positions of the 1s
+        accepts a list and a number of varriables to return a string"""
     Sum = ""
     for i in range(nbofVariables):
         check = False
@@ -102,3 +118,4 @@ TABLE_DE_VERITE = [
 
 print ("le produit de somme est: " + ProductOfSums(TABLE_DE_VERITE, 3))
 print ("la somme de produit est: " + sumOfProducts(TABLE_DE_VERITE, 3))
+corrected()
