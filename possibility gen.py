@@ -102,10 +102,10 @@ def returnSum(listof1, nbofVariables):
 
     return Sum
 
-def BinaryToGray(truthTable, nbOfVariable):
+def binaryToGray(truthTable, nbOfVariable):
     """turns a binary truth table into a code gray one
     accepts a binary truth table and a number of variable to return a Gray table"""
-    Table_Gray = truthTable
+    Table_Gray = truthTable[:]
     for i in range(1,nbOfVariable):
         compteur = 0
 
@@ -118,6 +118,29 @@ def BinaryToGray(truthTable, nbOfVariable):
 
     return(Table_Gray)
 
+def grayToKarnaugh(grayTable, nbOfVariable):
+    """turns a gray Truth table into a karnaugh table
+    accepts a gray table and a number of variable to return a karnaugh table"""
+    nbposPerLine = 2**(int(nbOfVariable/2)+ nbOfVariable%2)
+    nbLines = 2**int(nbOfVariable/2)
+
+    karnaugh = [ [0]*nbposPerLine for _ in range(nbLines)]
+
+    for i in range(nbLines):
+        for j in range(nbposPerLine):
+            karnaugh[i][j] = grayTable[i*nbposPerLine + j][nbOfVariable]
+    return karnaughCorrected(karnaugh,nbLines)
+
+def karnaughCorrected(rawKarnaughTable, nbOfLines):
+    """corrects the raw Karnaugh Table
+    accepts a raw Karnaugh Table and a nb of lines to return a corrected Karnaugh Table"""
+    cTableKarnaugh = rawKarnaughTable[:]
+    for i in range(nbOfLines):
+        if i%2 == 1:
+            cTableKarnaugh[i] = rawKarnaughTable[i][::-1]
+    return cTableKarnaugh
+
+
 def display ():
     #todo make shit display
     JUST_FOR_COMPILING
@@ -127,7 +150,7 @@ TABLE_DE_VERITE = [
     [0,0,1,1],
     [0,1,0,1],
     [0,1,1,1],
-    [1,0,0,0],
+    [1,0,0,1],
     [1,0,1,0],
     [1,1,0,1],
     [1,1,1,0]]
@@ -138,5 +161,5 @@ TABLE_DE_VERITE2 = [
     [1,0,1],
     [1,1,1]]
 
-print ("le produit de somme est: " + str(BinaryToGray(TABLE_DE_VERITE, 3)))
-print ("la somme de produit est: " + str(BinaryToGray(TABLE_DE_VERITE2, 2)))
+print ("le produit de somme est: " + ProductOfSums(TABLE_DE_VERITE, 3))
+print ("la somme de produit est: " + sumOfProducts(TABLE_DE_VERITE, 3))
