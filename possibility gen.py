@@ -102,6 +102,22 @@ def returnSum(listof1, nbofVariables):
 
     return Sum
 
+def BinaryToGray(truthTable, nbOfVariable):
+    """turns a binary truth table into a code gray one
+    accepts a binary truth table and a number of variable to return a Gray table"""
+    Table_Gray = truthTable
+    for i in range(1,nbOfVariable):
+        compteur = 0
+
+        for j in range(0,len(Table_Gray),2**i):
+            transitory = Table_Gray[(j-2**i)+2**i:j+(2)**i]
+
+            if (compteur % 2 == 1):
+                Table_Gray[(j-2**i)+2**i:j+(2)**i] = transitory[::-1]
+            compteur += 1
+
+    return(Table_Gray)
+
 def display ():
     #todo make shit display
     JUST_FOR_COMPILING
@@ -116,6 +132,11 @@ TABLE_DE_VERITE = [
     [1,1,0,1],
     [1,1,1,0]]
 
-print ("le produit de somme est: " + ProductOfSums(TABLE_DE_VERITE, 3))
-print ("la somme de produit est: " + sumOfProducts(TABLE_DE_VERITE, 3))
-corrected()
+TABLE_DE_VERITE2 = [
+    [0,0,0],
+    [0,1,1],
+    [1,0,1],
+    [1,1,1]]
+
+print ("le produit de somme est: " + str(BinaryToGray(TABLE_DE_VERITE, 3)))
+print ("la somme de produit est: " + str(BinaryToGray(TABLE_DE_VERITE2, 2)))
