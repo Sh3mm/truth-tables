@@ -140,6 +140,49 @@ def karnaughCorrected(rawKarnaughTable, nbOfLines):
             cTableKarnaugh[i] = rawKarnaughTable[i][::-1]
     return cTableKarnaugh
 
+def SoPKarnaugh(karnaughTable, nbOfVariables):
+    used = []
+    for i in range(karnaughTable):
+        for j in range(karnaughTable[i]):
+            if (karnaughTable[i][j] == 1) and (isInUse(i,j, used) == False):
+                updateUsed(used, sumInkarnaugh(karnaughTable, [i,j], [i,j]))
+
+def isInUse(i,j, used):
+    for coordo in used:
+        if (i < coordo[0] or i > coordo[2]) or (j < coordo[1] or j > coordo[3]):
+            return False
+    return True
+
+def updateUsed(used, new):
+    for i in range(new[0][0], new[1][0]):
+        for j in range(new[0][1], new [1][1]):
+            used.append([i,j])
+    return used
+
+def sumInkarnaugh(karnaughTable, start, end):
+    lenght = abs(end[1] - start[1])
+    hight = abs(end[0] - start[0])
+
+    if areX("H", hight, karnaughTable, start, 1):
+        end[0] += hight
+        sumInkarnaugh(karnaughTable, start, end)
+
+    elif areX("L", lenght, karnaughTable, start, 1):
+        end[1] += lenght
+        sumInkarnaugh(karnaughTable, start, end)
+
+    elif areX("H", -hight, karnaughTable, start, 1):
+        end[0] -= hight
+        sumInkarnaugh(karnaughTable, start, end)
+
+    elif areX("L", -lenght, karnaughTable, start, 1):
+        end[1] -= lenght
+        sumInkarnaugh(karnaughTable, start, end)
+
+    return [start, end]
+
+def areX(side,lenght, karnaughTable, start, x):
+    JUST_FOR_COMPILING
 
 def display ():
     #todo make shit display
