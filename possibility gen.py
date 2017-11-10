@@ -142,47 +142,78 @@ def karnaughCorrected(rawKarnaughTable, nbOfLines):
 
 def SoPKarnaugh(karnaughTable, nbOfVariables):
     used = []
-    for i in range(karnaughTable):
-        for j in range(karnaughTable[i]):
+    groups = []
+    for i in range(len(karnaughTable)):
+        for j in range(len(karnaughTable[i])):
             if (karnaughTable[i][j] == 1) and (isInUse(i,j, used) == False):
-                updateUsed(used, sumInkarnaugh(karnaughTable, [i,j], [i,j]))
+                group = groupsofKarnaugh(karnaughTable, [i, j], [i, j])
+                updateUsed(used, group)
+                groups.append(group)
+    return (groups)
 
 def isInUse(i,j, used):
+    if used == []:
+        return False
     for coordo in used:
-        if (i < coordo[0] or i > coordo[2]) or (j < coordo[1] or j > coordo[3]):
-            return False
-    return True
+        if (i == coordo[0]) and (j == coordo[1]):
+            return True
+    return False
 
 def updateUsed(used, new):
-    for i in range(new[0][0], new[1][0]):
-        for j in range(new[0][1], new [1][1]):
+    for i in range(new[0][0], new[1][0]+1):
+        for j in range(new[0][1], new [1][1]+1):
             used.append([i,j])
     return used
 
-def sumInkarnaugh(karnaughTable, start, end):
-    lenght = abs(end[1] - start[1])
-    hight = abs(end[0] - start[0])
+def groupsofKarnaugh(karnaughTable, start, end):
+    hight = abs(end[0] - start[0]) + 1
+    lenght = abs(end[1] - start[1]) + 1
 
-    if areX("H", hight, karnaughTable, start, 1):
+    if areX("H", hight, karnaughTable, start, end):
         end[0] += hight
-        sumInkarnaugh(karnaughTable, start, end)
+        groupsofKarnaugh(karnaughTable, start, end)
 
-    elif areX("L", lenght, karnaughTable, start, 1):
+    elif areX("L", lenght, karnaughTable, start, end):
         end[1] += lenght
-        sumInkarnaugh(karnaughTable, start, end)
+        groupsofKarnaugh(karnaughTable, start, end)
 
-    elif areX("H", -hight, karnaughTable, start, 1):
+    elif areX("H", -hight, karnaughTable, start, end) and (int(end[0]) == 0):
         end[0] -= hight
-        sumInkarnaugh(karnaughTable, start, end)
+        groupsofKarnaugh(karnaughTable, start, end)
 
-    elif areX("L", -lenght, karnaughTable, start, 1):
+    elif areX("L", -lenght, karnaughTable, start, end) and (int(end[1]) == 0):
         end[1] -= lenght
-        sumInkarnaugh(karnaughTable, start, end)
+        groupsofKarnaugh(karnaughTable, start, end)
 
     return [start, end]
 
-def areX(side,lenght, karnaughTable, start, x):
-    JUST_FOR_COMPILING
+def areX(side,lenght, karnaughTable, start, end):
+    if side == "L":
+        possibleEnd = [end[0],end[1]+lenght]
+    if side == "H":
+        possibleEnd = [end[0] + lenght, end[1]]
+
+    if (abs(possibleEnd[0] - start[0]) < (len(karnaughTable) - start[0])) and (abs(possibleEnd[1] - start[1]) < (len(karnaughTable[1]) - start[1])):
+        if start[0] > possibleEnd [0]:
+            smallestHight = possibleEnd[0]
+            bigestHight = start[0]
+        else:
+            smallestHight = start[0]
+            bigestHight = possibleEnd[0]
+        if start[1] > possibleEnd [1]:
+            smallestLenght = possibleEnd[1]
+            bigestLenght = start[1]
+        else:
+            smallestLenght = start[1]
+            bigestLenght = possibleEnd[1]
+
+        for i in range(smallestHight, bigestHight+1):
+            for j in range(smallestLenght, bigestLenght+1):
+                if karnaughTable[i][j] != 1:
+                    return False
+    else:
+        return False
+    return True
 
 def display ():
     #todo make shit display
@@ -204,5 +235,16 @@ TABLE_DE_VERITE2 = [
     [1,0,1],
     [1,1,1]]
 
-print ("le produit de somme est: " + ProductOfSums(TABLE_DE_VERITE, 3))
-print ("la somme de produit est: " + sumOfProducts(TABLE_DE_VERITE, 3))
+x = binaryToGray(TABLE_DE_VERITE2,2)
+for a in x:
+    print (a)
+print ("")
+
+y = grayToKarnaugh(x,2)
+
+for a in y:
+    print (a)
+print ("")
+
+z = SoPKarnaugh(y,2)
+print (z)
