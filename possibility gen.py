@@ -140,14 +140,14 @@ def karnaughCorrected(rawKarnaughTable, nbOfLines):
             cTableKarnaugh[i] = rawKarnaughTable[i][::-1]
     return cTableKarnaugh
 
-def SoPKarnaugh(karnaughTable, nbOfVariables):
+def getGroupsKarnaugh(karnaughTable, nbOfVariables):
     used = []
     groups = []
     for i in range(len(karnaughTable)):
         for j in range(len(karnaughTable[i])):
             if (karnaughTable[i][j] == 1) and (isInUse(i,j, used) == False):
                 group = groupsofKarnaugh(karnaughTable, [i, j], [i, j])
-                updateUsed(used, group)
+                updateUsed(used, group, karnaughTable)
                 groups.append(group)
     return (groups)
 
@@ -159,71 +159,107 @@ def isInUse(i,j, used):
             return True
     return False
 
-def updateUsed(used, new):
+def updateUsed(used, new, table):
     for i in range(new[0][0], new[1][0]+1):
         for j in range(new[0][1], new [1][1]+1):
-            used.append([i,j])
+            used.append(correctedTile([i, j], table))
     return used
 
 def groupsofKarnaugh(karnaughTable, start, end):
     hight = abs(end[0] - start[0]) + 1
     lenght = abs(end[1] - start[1]) + 1
 
-    if areX("H", hight, karnaughTable, start, end):
+    if areX("H", hight, karnaughTable, start, end, 1):
         end[0] += hight
         groupsofKarnaugh(karnaughTable, start, end)
 
-    elif areX("L", lenght, karnaughTable, start, end):
+    elif areX("L", lenght, karnaughTable, start, end, 1):
         end[1] += lenght
         groupsofKarnaugh(karnaughTable, start, end)
 
-    elif areX("H", -hight, karnaughTable, start, end) and (int(end[0]) == 0):
-        end[0] -= hight
-        groupsofKarnaugh(karnaughTable, start, end)
+#    if areX("-H", -hight, karnaughTable, start, end, 1):
+#        start[0] -= hight
+#        groupsofKarnaugh(karnaughTable, start, end)
 
-    elif areX("L", -lenght, karnaughTable, start, end) and (int(end[1]) == 0):
-        end[1] -= lenght
+    elif areX("-L", -lenght, karnaughTable, start, end, 1):
+        start[1] -= lenght
         groupsofKarnaugh(karnaughTable, start, end)
 
     return [start, end]
 
-def areX(side,lenght, karnaughTable, start, end):
+def areX(side,lenght, karnaughTable, start, end, x):
     if side == "L":
         possibleEnd = [end[0],end[1]+lenght]
+        possibleStart = start[:]
     if side == "H":
         possibleEnd = [end[0] + lenght, end[1]]
+        possibleStart = start[:]
+    if side == "-L":
+        possibleStart = [start[0] , start[1]+ lenght]
+        possibleEnd = end[:]
+    if side == "-H":
+        possibleStart = [start[0] + lenght, start[1]]
+        possibleEnd = end[:]
 
-    if (abs(possibleEnd[0] - start[0]) < (len(karnaughTable) - start[0])) and (abs(possibleEnd[1] - start[1]) < (len(karnaughTable[1]) - start[1])):
-        if start[0] > possibleEnd [0]:
+    try:
+        if possibleStart[0] > possibleEnd [0]:
             smallestHight = possibleEnd[0]
-            bigestHight = start[0]
+            bigestHight = possibleStart[0]
         else:
-            smallestHight = start[0]
+            smallestHight = possibleStart[0]
             bigestHight = possibleEnd[0]
-        if start[1] > possibleEnd [1]:
+        if possibleStart[1] > possibleEnd [1]:
             smallestLenght = possibleEnd[1]
-            bigestLenght = start[1]
+            bigestLenght = possibleStart[1]
         else:
-            smallestLenght = start[1]
+            smallestLenght = possibleStart[1]
             bigestLenght = possibleEnd[1]
 
         for i in range(smallestHight, bigestHight+1):
             for j in range(smallestLenght, bigestLenght+1):
-                if karnaughTable[i][j] != 1:
+                if karnaughTable[i][j] != x:
                     return False
-    else:
+    except IndexError:
         return False
     return True
+
+def correctedTile(tile, karnaughTable):
+    if tile[0] < 0:
+        tile[0] += len(karnaughTable)
+    if tile[1] < 0:
+        tile[1] += len(karnaughTable[0])
+    return tile
+
+def SoPKarnaugh(listOfGroups):
+    for group in listOfGroups:
+        begin = group[0]
+        end = group[1]
+        if begin[0] > end[0]:
+            smallestHight = end[0]
+            bigestHight = begin[0]
+        else:
+            smallestHight = begin[0]
+            bigestHight = end[0]
+        if begin[1] > end [1]:
+            smallestLenght = end[1]
+            bigestLenght = begin[1]
+        else:
+            smallestLenght = begin[1]
+            bigestLenght = end[1]
+
+        for i in range(smallestHight, bigestHight):
+            for j in range(smallestLenght, bigestLenght):
+                product = "(" + char(65+graytodec)
 
 def display ():
     #todo make shit display
     JUST_FOR_COMPILING
 
 TABLE_DE_VERITE = [
-    [0,0,0,0],
-    [0,0,1,1],
+    [0,0,0,1],
+    [0,0,1,0],
     [0,1,0,1],
-    [0,1,1,1],
+    [0,1,1,0],
     [1,0,0,1],
     [1,0,1,0],
     [1,1,0,1],
@@ -235,16 +271,16 @@ TABLE_DE_VERITE2 = [
     [1,0,1],
     [1,1,1]]
 
-x = binaryToGray(TABLE_DE_VERITE2,2)
+x = binaryToGray(TABLE_DE_VERITE,3)
 for a in x:
     print (a)
 print ("")
 
-y = grayToKarnaugh(x,2)
+y = grayToKarnaugh(x,3)
 
 for a in y:
     print (a)
 print ("")
 
-z = SoPKarnaugh(y,2)
+z = getGroupsKarnaugh(y,3)
 print (z)
