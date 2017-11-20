@@ -4,18 +4,19 @@ def corrected(num, top):
     """adds 0s in front of your binary number to make it a cenrtain lenght
     accepts a binary number in a list and a lenghts to return a list """
     raw = []
-    for i in range(int(math.log2(top)) - int(len(num)/2)):
-        raw += ["0", ";"]
+    for i in range(int(math.log2(top)) - int(len(num))):
+        raw += [0]
+
     return(raw + num)
 
 def toBin(num, top):
     """transforms a exadecimal number to its binary conterpart.
     accepts a number and a lenght to returns a list"""
     output = []
-    raw = (bin(num))[2:]
+    raw = bin(num)[2:]
 
     for i in raw:
-        output += [i] + [";"]
+        output += [int(i)]
 
     return(corrected(output, top))
 
@@ -230,26 +231,12 @@ def correctedTile(tile, karnaughTable):
         tile[1] += len(karnaughTable[0])
     return tile
 
-def SoPKarnaugh(listOfGroups):
-    for group in listOfGroups:
-        begin = group[0]
-        end = group[1]
-        if begin[0] > end[0]:
-            smallestHight = end[0]
-            bigestHight = begin[0]
-        else:
-            smallestHight = begin[0]
-            bigestHight = end[0]
-        if begin[1] > end [1]:
-            smallestLenght = end[1]
-            bigestLenght = begin[1]
-        else:
-            smallestLenght = begin[1]
-            bigestLenght = end[1]
+def genSideBar(table):
+    lenght = len(table)
+    nVariable =int( math.log2(lenght) )
+    bin = allPossibilities(nVariable)
+    return binaryToGray(bin, nVariable)
 
-        for i in range(smallestHight, bigestHight):
-            for j in range(smallestLenght, bigestLenght):
-                product = "(" + char(65+graytodec)
 
 def display ():
     #todo make shit display
@@ -278,8 +265,14 @@ print ("")
 
 y = grayToKarnaugh(x,3)
 
-for a in y:
-    print (a)
+lenght = genSideBar(y[0])
+hight = genSideBar(y)
+print (lenght)
+print (hight)
+print ("")
+
+for i in range(len(y)):
+    print (y[i])
 print ("")
 
 z = getGroupsKarnaugh(y,3)
