@@ -1,5 +1,8 @@
 import math
 
+HIGHT = 0
+LENGHT = 1
+
 def corrected(num, top):
     """adds 0s in front of your binary number to make it a cenrtain lenght
     accepts a binary number in a list and a lenghts to return a list """
@@ -147,7 +150,7 @@ def getGroupsKarnaugh(karnaughTable, nbOfVariables):
     for i in range(len(karnaughTable)):
         for j in range(len(karnaughTable[i])):
             if (karnaughTable[i][j] == 1) and (isInUse(i,j, used) == False):
-                group = groupsofKarnaugh(karnaughTable, [i, j], [i, j])
+                group = groupsofKarnaugh(karnaughTable, [i, j], [i, j], 1)
                 updateUsed(used, group, karnaughTable)
                 groups.append(group)
     return (groups)
@@ -166,25 +169,25 @@ def updateUsed(used, new, table):
             used.append(correctedTile([i, j], table))
     return used
 
-def groupsofKarnaugh(karnaughTable, start, end):
+def groupsofKarnaugh(karnaughTable, start, end, x):
     hight = abs(end[0] - start[0]) + 1
     lenght = abs(end[1] - start[1]) + 1
 
-    if areX("H", hight, karnaughTable, start, end, 1):
+    if areX("H", hight, karnaughTable, start, end, x):
         end[0] += hight
-        groupsofKarnaugh(karnaughTable, start, end)
+        groupsofKarnaugh(karnaughTable, start, end,x)
 
-    elif areX("L", lenght, karnaughTable, start, end, 1):
+    elif areX("L", lenght, karnaughTable, start, end, x):
         end[1] += lenght
-        groupsofKarnaugh(karnaughTable, start, end)
+        groupsofKarnaugh(karnaughTable, start, end, x)
 
-#    if areX("-H", -hight, karnaughTable, start, end, 1):
+#    if areX("-H", -hight, karnaughTable, start, end, x):
 #        start[0] -= hight
-#        groupsofKarnaugh(karnaughTable, start, end)
+#        groupsofKarnaugh(karnaughTable, start, end, x)
 
-    elif areX("-L", -lenght, karnaughTable, start, end, 1):
+    elif areX("-L", -lenght, karnaughTable, start, end, x):
         start[1] -= lenght
-        groupsofKarnaugh(karnaughTable, start, end)
+        groupsofKarnaugh(karnaughTable, start, end, x)
 
     return [start, end]
 
@@ -237,43 +240,48 @@ def genSideBar(table):
     bin = allPossibilities(nVariable)
     return binaryToGray(bin, nVariable)
 
+def areSame(hightBar, group, xy):
+    product = hightBar[0][:]
+    start = group[0]
+    end = group[1]
+
+    for j in range(len(hightBar[0])):
+        test = True
+        for i in range(start[xy], end[xy]):
+            if (hightBar[i][j] != hightBar[i-1][j]) and (i-1 >= start[1]):
+                test = False
+                break
+        if test:
+            product[i] = 1
+    return product
+
+def letters(bar, group, xy):
+    same = areSame(bar,group,xy)
+    coordoxy = group[0][xy]
+    output = []
+    for i in range(len(same)):
+        if same[i] == 1:
+            if bar[coordoxy][i] == 1:
+                output.append(chr(65+i))
+            elif bar[coordoxy][i] == 0:
+                output.append(str(chr(65+i) + "'"))
+
+    return output
+#todo: not done!!! wrong letters
+
+def karnaughProduct(karnaugTable, group):
+    lenght = genSideBar(karnaugTable[0])
+    hight = genSideBar(karnaugTable)
+    output = []
+
+    hightLetters = letters(hight, group, HIGHT)
+    lenghtLetters = letters(lenght, group, LENGHT)
+    totalLetters = lenghtLetters[::-1] + hightLetters
+    for i in totalLetters:
+        output += [i]
+
+    return output
 
 def display ():
     #todo make shit display
     JUST_FOR_COMPILING
-
-TABLE_DE_VERITE = [
-    [0,0,0,1],
-    [0,0,1,0],
-    [0,1,0,1],
-    [0,1,1,0],
-    [1,0,0,1],
-    [1,0,1,0],
-    [1,1,0,1],
-    [1,1,1,0]]
-
-TABLE_DE_VERITE2 = [
-    [0,0,0],
-    [0,1,1],
-    [1,0,1],
-    [1,1,1]]
-
-x = binaryToGray(TABLE_DE_VERITE,3)
-for a in x:
-    print (a)
-print ("")
-
-y = grayToKarnaugh(x,3)
-
-lenght = genSideBar(y[0])
-hight = genSideBar(y)
-print (lenght)
-print (hight)
-print ("")
-
-for i in range(len(y)):
-    print (y[i])
-print ("")
-
-z = getGroupsKarnaugh(y,3)
-print (z)
