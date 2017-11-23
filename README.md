@@ -7,3 +7,4 @@ the gooal of this project was to make it so that the computer solves and
 simplify the equation the same way a human would using a karnaugh's table
 
 
+
