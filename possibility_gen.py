@@ -23,7 +23,7 @@ def toBin(num, top):
 
     return(corrected(output, top))
 
-def allPossibilities (nbOfVariables):
+def allPossibilities(nbOfVariables):
     """makes a list of all the binary possibilities of a certain number of variables (2^x)
     accepts a number of variables to return a list"""
     nbOfPossibilty = 2**int(nbOfVariables)
@@ -34,7 +34,7 @@ def allPossibilities (nbOfVariables):
 
     return arrayFinal
 
-def makeListOfX (answers, Z):
+def makeListOfX(answers, Z):
     """makes a list of the positions of a numbers in a list
     accept a list and a number to return a list"""
     listOf = []
@@ -45,7 +45,7 @@ def makeListOfX (answers, Z):
         placeInList += 1
     return listOf
 
-def sumOfProducts (answersList, nbOfVariables):
+def sumOfProducts(answersList, nbOfVariables):
     """makes a sum of products of the truth table given to it
     accepts a truth table and a number of varriables to return a string"""
     sumOfProduct = "F = "
@@ -75,7 +75,7 @@ def returnProduct(listof1, nbofVariables):
 
     return product
 
-def ProductOfSums (answersList, nbOfVariables):
+def ProductOfSums(answersList, nbOfVariables):
     """makes a product of sums of the truth table given to it
     accepts a truth table and a number of varriables to return a string"""
     productOfSum = "F = "
@@ -144,13 +144,13 @@ def karnaughCorrected(rawKarnaughTable, nbOfLines):
             cTableKarnaugh[i] = rawKarnaughTable[i][::-1]
     return cTableKarnaugh
 
-def getGroupsKarnaugh(karnaughTable, nbOfVariables):
+def getGroupsKarnaugh(karnaughTable, nbOfVariables, x):
     used = []
     groups = []
     for i in range(len(karnaughTable)):
         for j in range(len(karnaughTable[i])):
-            if (karnaughTable[i][j] == 1) and (isInUse(i,j, used) == False):
-                group = groupsofKarnaugh(karnaughTable, [i, j], [i, j], 1)
+            if (karnaughTable[i][j] == x) and (isInUse(i,j, used) == False):
+                group = groupsofKarnaugh(karnaughTable, [i, j], [i, j], x)
                 updateUsed(used, group, karnaughTable)
                 groups.append(group)
     return (groups)
@@ -248,39 +248,83 @@ def areSame(hightBar, group, xy):
     for j in range(len(hightBar[0])):
         test = True
         for i in range(start[xy], end[xy]):
-            if (hightBar[i][j] != hightBar[i-1][j]) and (i-1 >= start[1]):
+            if (hightBar[i][j] != hightBar[i-1][j]):# and (i-1 > start[1]):
                 test = False
                 break
         if test:
-            product[i] = 1
+            product[j] = 1
     return product
 
 def letters(bar, group, xy):
     same = areSame(bar,group,xy)
     coordoxy = group[0][xy]
     output = []
+    nVariable = int(math.log2(8)- math.log2(8)%2)
+
     for i in range(len(same)):
         if same[i] == 1:
-            if bar[coordoxy][i] == 1:
-                output.append(chr(65+i))
-            elif bar[coordoxy][i] == 0:
-                output.append(str(chr(65+i) + "'"))
+            if (bar[coordoxy][i] == 1) and (xy == HIGHT):
+                output.append(str(chr(65 + nVariable - 1 - i)))
+
+            elif (bar[coordoxy][i] == 0) and (xy == HIGHT):
+                output.append(str(chr(65 + nVariable - 1 - i) + "'"))
+
+            elif (bar[coordoxy][i] == 1) and (xy == LENGHT):
+                output.append (str(chr(65 + nVariable + i)))
+
+            elif (bar[coordoxy][i] == 0) and (xy == LENGHT):
+                output.append(str(chr(65 + nVariable + i) + "'"))
 
     return output
-#todo: not done!!! wrong letters
 
 def karnaughProduct(karnaugTable, group):
     lenght = genSideBar(karnaugTable[0])
     hight = genSideBar(karnaugTable)
-    output = []
+    output = ""
 
     hightLetters = letters(hight, group, HIGHT)
     lenghtLetters = letters(lenght, group, LENGHT)
-    totalLetters = lenghtLetters[::-1] + hightLetters
+    totalLetters =  hightLetters[::-1] + lenghtLetters
     for i in totalLetters:
-        output += [i]
+        output += i
 
-    return output
+    return ("(" + output + ")")
+
+def karnaughSumOfProduct(karnaugTable, groups):
+    final = "F = "
+    for group in groups:
+        if group == groups[-1]:
+            final += karnaughProduct(karnaugTable, group)
+        else:
+            final += karnaughProduct(karnaugTable, group) + "+"
+
+    return (final)
+
+def karnaughSum(karnaugTable, group):
+    lenght = genSideBar(karnaugTable[0])
+    hight = genSideBar(karnaugTable)
+    output = ""
+
+    hightLetters = letters(hight, group, HIGHT)
+    lenghtLetters = letters(lenght, group, LENGHT)
+    totalLetters =  hightLetters[::-1] + lenghtLetters
+    for i in totalLetters:
+        if totalLetters[-1] == i:
+            output += i
+        else:
+            output += i + "+"
+
+    return ("(" + output + ")")
+#todo: fix the inversion of the matris
+
+def karnaughProductOfSum(karnaugTable, groups):
+    final = "F = "
+    for group in groups:
+        final += karnaughSum(karnaugTable, group)
+
+
+    return (final)
+#todo: fix the inversion of the matris
 
 def display ():
     #todo make shit display
