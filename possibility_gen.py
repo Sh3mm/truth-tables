@@ -256,7 +256,7 @@ def areSame(hightBar, group, xy):
     return product
 
 def letters(bar, group, xy):
-    same = areSame(bar,group,xy)
+    same = areSame(bar,group,xy)[::-1]
     coordoxy = group[0][xy]
     output = []
     nVariable = int(math.log2(8)- math.log2(8)%2)
@@ -264,10 +264,10 @@ def letters(bar, group, xy):
     for i in range(len(same)):
         if same[i] == 1:
             if (bar[coordoxy][i] == 1) and (xy == HIGHT):
-                output.append(str(chr(65 + nVariable - 1 - i)))
+                output.append(str(chr(65 + i)))
 
             elif (bar[coordoxy][i] == 0) and (xy == HIGHT):
-                output.append(str(chr(65 + nVariable - 1 - i) + "'"))
+                output.append(str(chr(65 + i) + "'"))
 
             elif (bar[coordoxy][i] == 1) and (xy == LENGHT):
                 output.append (str(chr(65 + nVariable + i)))
@@ -284,7 +284,7 @@ def karnaughProduct(karnaugTable, group):
 
     hightLetters = letters(hight, group, HIGHT)
     lenghtLetters = letters(lenght, group, LENGHT)
-    totalLetters =  hightLetters[::-1] + lenghtLetters
+    totalLetters =  hightLetters + lenghtLetters
     for i in totalLetters:
         output += i
 
@@ -307,7 +307,7 @@ def karnaughSum(karnaugTable, group):
 
     hightLetters = letters(hight, group, HIGHT)
     lenghtLetters = letters(lenght, group, LENGHT)
-    totalLetters =  hightLetters[::-1] + lenghtLetters
+    totalLetters =  hightLetters + lenghtLetters
     for i in totalLetters:
         if totalLetters[-1] == i:
             output += i
@@ -315,7 +315,6 @@ def karnaughSum(karnaugTable, group):
             output += i + "+"
 
     return ("(" + output + ")")
-#todo: fix the inversion of the matris
 
 def karnaughProductOfSum(karnaugTable, groups):
     final = "F = "
@@ -324,7 +323,6 @@ def karnaughProductOfSum(karnaugTable, groups):
 
 
     return (final)
-#todo: fix the inversion of the matris
 
 def display ():
     #todo make shit display
